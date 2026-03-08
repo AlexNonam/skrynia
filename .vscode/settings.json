@@ -1,0 +1,10 @@
+{
+    "java.import.exclusions": [
+        "**/android/**",
+        "**/.dart_tool/**",
+        "**/build/**"
+    ],
+    "java.import.gradle.enabled": false,
+    "java.server.launchMode": "LightWeight",
+    "java.showBuildStatusOnStart.enabled": false
+}
