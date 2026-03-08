@@ -16,9 +16,9 @@ class _ScrollDialogState extends State<ScrollDialog>
   late Animation<double> _heightAnimation;
   final TextEditingController _textController = TextEditingController();
 
-  // Налаштування розмірів під твої картинки
+  // Размеры под ваши картинки
   final double scrollWidth = 320.0;
-  final double maxPaperHeight = 380.0;
+  final double maxPaperHeight = 350.0;
   final double rollerHeight = 55.0;
 
   @override
@@ -44,7 +44,7 @@ class _ScrollDialogState extends State<ScrollDialog>
     super.dispose();
   }
 
-  // Збереження в базу через DatabaseHelper.instance
+  // Сохранение записи
   Future<void> _saveData() async {
     if (_textController.text.trim().isNotEmpty) {
       await DatabaseHelper.instance.insert({
@@ -76,7 +76,7 @@ class _ScrollDialogState extends State<ScrollDialog>
               child: Stack(
                 alignment: Alignment.topCenter,
                 children: [
-                  // 1. Текстура паперу (розтягується)
+                  // 1. Пергамент (растягивается)
                   Positioned(
                     top: rollerHeight - 10,
                     child: Image.asset(
@@ -87,7 +87,7 @@ class _ScrollDialogState extends State<ScrollDialog>
                     ),
                   ),
 
-                  // 2. Верхній валик
+                  // 2. Верхний роллер
                   Positioned(
                     top: 0,
                     child: Image.asset(
@@ -98,7 +98,7 @@ class _ScrollDialogState extends State<ScrollDialog>
                     ),
                   ),
 
-                  // 3. Нижній валик (їде вниз)
+                  // 3. Нижний роллер (уезжает вниз)
                   Positioned(
                     top: currentPaperHeight + rollerHeight - 10,
                     child: Image.asset(
@@ -109,7 +109,7 @@ class _ScrollDialogState extends State<ScrollDialog>
                     ),
                   ),
 
-                  // 4. Текст та кнопка всередині (з'являються після розвороту)
+                  // 4. Поля ввода и кнопка
                   if (_controller.value > 0.7)
                     Positioned.fill(
                       top: rollerHeight + 30,
@@ -126,7 +126,7 @@ class _ScrollDialogState extends State<ScrollDialog>
                                   color: Color(0xFF3E2723),
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,
-                                  letterSpacing: 2,
+                                  letterSpacing: 1.5,
                                 ),
                               ),
                               const SizedBox(height: 15),
@@ -137,14 +137,14 @@ class _ScrollDialogState extends State<ScrollDialog>
                                 style: const TextStyle(
                                     color: Color(0xFF3E2723), fontSize: 16),
                                 decoration: const InputDecoration(
-                                  hintText: "Введіть назву...",
+                                  hintText: "Що додаємо?...",
                                   hintStyle: TextStyle(
                                       color: Colors.brown, fontSize: 14),
                                   border: InputBorder.none,
                                 ),
                               ),
                               const Spacer(),
-                              // Твоя дерев'яна пуговиця
+                              // Пуговица-сохранялка
                               WoodenButton(onTap: _saveData),
                             ],
                           ),
@@ -161,7 +161,6 @@ class _ScrollDialogState extends State<ScrollDialog>
   }
 }
 
-// Окремий віджет для пуговиці, щоб не роздувати основний код
 class WoodenButton extends StatefulWidget {
   final VoidCallback onTap;
   const WoodenButton({super.key, required this.onTap});

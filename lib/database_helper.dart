@@ -1,63 +1,51 @@
-
 import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
-  static final DatabaseHelper _instance = DatabaseHelper._internal();
-  factory DatabaseHelper() => _instance;
-  DatabaseHelper._internal();
-
+  // Створюємо єдиний екземпляр класу (Singleton)
+  static final DatabaseHelper instance = DatabaseHelper._init();
   static Database? _database;
+
+  DatabaseHelper._init();
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDb();
+    _database = await _initDB('skrynia.db');
     return _database!;
   }
 
-  Future<Database> _initDb() async {
+  Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'skrynia.db');
+    final path = join(dbPath, filePath);
+
     return await openDatabase(
       path,
       version: 1,
-      onCreate: _onCreate,
+      onCreate: _createDB,
     );
   }
 
-  Future<void> _onCreate(Database db, int version) async {
+  Future _createDB(Database db, int version) async {
+    // Створюємо таблицю для ресурсів
     await db.execute('''
-      CREATE TABLE resources(
+      CREATE TABLE resursi (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        count INTEGER NOT NULL
+        date TEXT NOT NULL
       )
     ''');
   }
 
-  // Метод для додавання нового ресурсу
-  Future<int> insertResource(Map<String, dynamic> row) async {
-    final db = await database;
-    return await db.insert('resources', row);
+  // Метод для додавання запису
+  Future<int> insert(Map<String, dynamic> row) async {
+    final db = await instance.database;
+    return await db.insert('resursi', row);
   }
 
-  // Метод для отримання всіх ресурсів
-  Future<List<Map<String, dynamic>>> queryAllResources() async {
-    final db = await database;
-    return await db.query('resources', orderBy: 'name');
-  }
-  
-  // Метод для оновлення ресурсу
-  Future<int> updateResource(Map<String, dynamic> row) async {
-    final db = await database;
-    int id = row['id'];
-    return await db.update('resources', row, where: 'id = ?', whereArgs: [id]);
-  }
-
-  // Метод для видалення ресурсу
-  Future<int> deleteResource(int id) async {
-    final db = await database;
-    return await db.delete('resources', where: 'id = ?', whereArgs: [id]);
+  // Метод для читання всіх записів (знадобиться для списку)
+  Future<List<Map<String, dynamic>>> queryAllRows() async {
+    final db = await instance.database;
+    return await db.query('resursi', orderBy: 'id DESC');
   }
 }
